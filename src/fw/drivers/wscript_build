@@ -175,7 +175,7 @@ elif bld.is_robert():
         ],
     )
 
-elif bld.is_asterix():
+elif bld.is_asterix() or bld.is_nrf52840dk():
     bld(
         name='drivers',
         use=[
@@ -694,6 +694,18 @@ elif bld.is_silk():
             'root_includes',
         ],
     )
+elif bld.is_nrf52840dk():
+    bld.objects(
+        name='driver_imu',
+        source=[
+            'imu/imu_silk.c',
+        ],
+        use=[
+            'driver_mag_null',
+            'fw_includes',
+            'root_includes',
+        ],
+    )
 
 if bld.env.BOARD == "v2_0":
     bld.objects(
@@ -1164,44 +1176,52 @@ if mcu_family in ('STM32F2', 'STM32F4', 'STM32F7'):
 
 if mcu_family == 'NRF52840':
     # XXX: factor this into... drivers
+    srcs = [
+        'nrf5/stubs/rtc.c',
+        'nrf5/stubs/rng.c',
+        'flash/flash_api.c',
+        'flash/flash_crc.c',
+        'flash/flash_erase.c',
+        'flash/cd_flash_driver.c',
+        'battery/battery_common.c',
+        'nrf5/stubs/battery.c',
+        'nrf5/qspi.c',
+        'task_watchdog.c',
+        'nrf5/stubs/watchdog.c',
+        'nrf5/stubs/accel.c',
+        'nrf5/stubs/ambient_light.c',
+        'nrf5/stubs/vibe.c',
+        'i2c.c',
+        'nrf5/stubs/otp.c',
+        'nrf5/stubs/mcu.c',
+        'backlight.c',
+        'nrf5/button.c',
+        'nrf5/debounced_button.c',
+        'nrf5/stubs/voltage_monitor.c',
+        'imu/imu_asterix.c',
+        'nrf5/stubs/temperature.c',
+        'nrf5/stubs/periph_config.c',
+        'nrf5/stubs/gpio_defaults.c',
+        'nrf5/exti_nrf52.c',
+        'nrf5/uart.c',
+        'nrf5/gpio.c',
+        'nrf5/i2c_hal.c',
+        'nrf5/spi.c',
+        'nrf5/pwm.c',
+    ]
+    
+    # FIXME: huge hack - these should be added to the build above
+    if bld.is_nrf52840dk():
+      srcs.append('flash/mx25r6435f.c'),
+      srcs.append('display/sharp_ls013b7dh01/sharp_ls013b7dh01_nrf5.c')
+    if bld.is_asterix():
+      srcs.append('flash/xt25f64b.c'),
+      srcs.append('display/sharp_ls013b7dh01/sharp_ls013b7dh01_nrf5.c')
+      srcs.append('pmic/npm1300.c')
+    
     bld.objects(
         name='driver_nrf52',
-        source=[
-            'nrf5/stubs/rtc.c',
-            'nrf5/stubs/rng.c',
-            'flash/flash_api.c',
-            'flash/flash_crc.c',
-            'flash/flash_erase.c',
-            'flash/cd_flash_driver.c',
-            'battery/battery_common.c',
-            'nrf5/stubs/battery.c',
-            'flash/xt25f64b.c',
-            'nrf5/qspi.c',
-            'task_watchdog.c',
-            'nrf5/stubs/watchdog.c',
-            'display/sharp_ls013b7dh01/sharp_ls013b7dh01_nrf5.c',
-            'nrf5/stubs/accel.c',
-            'nrf5/stubs/ambient_light.c',
-            'nrf5/stubs/vibe.c',
-            'i2c.c',
-            'nrf5/stubs/otp.c',
-            'nrf5/stubs/mcu.c',
-            'backlight.c',
-            'nrf5/button.c',
-            'nrf5/debounced_button.c',
-            'nrf5/stubs/voltage_monitor.c',
-            'imu/imu_asterix.c',
-            'nrf5/stubs/temperature.c',
-            'nrf5/stubs/periph_config.c',
-            'nrf5/stubs/gpio_defaults.c',
-            'nrf5/exti_nrf52.c',
-            'nrf5/uart.c',
-            'nrf5/gpio.c',
-            'nrf5/i2c_hal.c',
-            'nrf5/spi.c',
-            'nrf5/pwm.c',
-            'pmic/npm1300.c',
-        ],
+        source=srcs,
         use=[
             'driver_clocksource',
             'driver_gpio',

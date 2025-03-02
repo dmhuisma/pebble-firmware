@@ -81,7 +81,8 @@ def options(opt):
                              'robert_bb2',
                              'robert_evt',
                              'robert_es',
-                             'asterix_evt1',],
+                             'asterix_evt1',
+                             'nrf52840dk',],
                    help='Which board we are targeting '
                         'bb2, snowy_dvt, spalding, silk...')
     opt.add_option('--jtag', action='store', default=None, dest='jtag',  # default is bb2 (below)
@@ -212,7 +213,7 @@ def handle_configure_options(conf):
                       'See PBL-10174.')
             conf.env.append_value('DEFINES', 'PBL_NOSLEEP')
 
-    if 'bb' in conf.options.board or conf.options.board in ('asterix_evt1'):
+    if 'bb' in conf.options.board or conf.options.board in ('asterix_evt1', 'nrf52840dk'):
         conf.env.append_value('DEFINES', 'IS_BIGBOARD')
 
     if conf.options.nosleep:
@@ -421,7 +422,7 @@ def configure(conf):
     elif conf.options.board in ('snowy_bb2', 'spalding_bb2'):
         conf.env.JTAG = 'jtag_ftdi'
     elif conf.options.board in ('cutts_bb', 'robert_bb', 'robert_bb2', 'robert_evt',
-                                'silk_evt', 'silk_bb', 'silk_bb2', 'silk'):
+                                'silk_evt', 'silk_bb', 'silk_bb2', 'silk', 'asterix_evt1', 'nrf52840dk'):
         conf.env.JTAG = 'swd_ftdi'
     elif conf.options.board in ('asterix_evt1'):
         conf.env.JTAG = 'cmsis-dap'
@@ -445,7 +446,7 @@ def configure(conf):
     elif conf.is_snowy_compatible():
         conf.env.PLATFORM_NAME = 'basalt'
         conf.env.MIN_SDK_VERSION = 2
-    elif conf.is_silk() or conf.is_asterix():
+    elif conf.is_silk() or conf.is_asterix() or conf.is_nrf52840dk():
         conf.env.PLATFORM_NAME = 'diorite'
         conf.env.MIN_SDK_VERSION = 2
     elif conf.is_cutts() or conf.is_robert():
@@ -463,7 +464,7 @@ def configure(conf):
         conf.env.MICRO_FAMILY = 'STM32F4'
     elif conf.is_cutts() or conf.is_robert():
         conf.env.MICRO_FAMILY = 'STM32F7'
-    elif conf.is_asterix():
+    elif conf.is_asterix() or conf.is_nrf52840dk():
         conf.env.MICRO_FAMILY = 'NRF52840'
     else:
         conf.fatal('No micro family specified for {}!'.format(conf.options.board))
@@ -507,7 +508,7 @@ def configure(conf):
     elif conf.is_tintin() or conf.is_snowy() or conf.is_spalding():
         conf.env.bt_controller = 'cc2564x'
         conf.env.append_value('DEFINES', ['BT_CONTROLLER_CC2564X'])
-    elif conf.is_asterix():
+    elif conf.is_asterix() or conf.is_nrf52840dk():
         conf.env.bt_controller = 'nrf52'
         conf.env.append_value('DEFINES', ['BT_CONTROLLER_NRF52'])
     elif bt_board in ('silk_bb2', 'silk', 'robert_bb2', 'robert_evt'):

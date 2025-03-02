@@ -9,7 +9,7 @@ def configure(conf):
         conf.env.append_unique('DEFINES', 'NRF52840_XXAA')
         conf.env.append_unique('DEFINES', 'S140')
         conf.env.append_unique('DEFINES', 'SOFTDEVICE_PRESENT')
-    if conf.is_asterix():
+    if conf.is_asterix() or conf.is_nrf52840dk():
         conf.env.append_unique('DEFINES', 'NRF_CONFIG_NFCT_PINS_AS_GPIOS')
     conf.recurse('FreeRTOS')
     if conf.capability('HAS_JAVASCRIPT'):
@@ -98,6 +98,9 @@ def build(bld):
         if bld.is_asterix():
             # is there a better way to do this?
             micro_includes += ['../board/boards/board_asterix']
+        elif bld.is_nrf52840dk():
+            # is there a better way to do this?
+            micro_includes += ['../board/boards/board_nrf52840dk']
         else:
             bld.fatal("no board for nRF5 includes")
     else:
