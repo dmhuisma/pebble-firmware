@@ -32,12 +32,12 @@ static const BoardConfig BOARD_CONFIG = {
 
 static const BoardConfigButton BOARD_CONFIG_BUTTON = {
   .buttons = {
-    [BUTTON_ID_BACK] =
-        { "Back",   { NRFX_GPIOTE_INSTANCE(0), 1, NRF_GPIO_PIN_MAP(0, 24) }, NRF_GPIO_PIN_PULLUP },
+    [BUTTON_ID_SELECT] =
+        { "Select",   { NRFX_GPIOTE_INSTANCE(0), 1, NRF_GPIO_PIN_MAP(0, 24) }, NRF_GPIO_PIN_PULLUP },
     [BUTTON_ID_UP] =
         { "Up",     { NRFX_GPIOTE_INSTANCE(0), 2, NRF_GPIO_PIN_MAP(0, 12) }, NRF_GPIO_PIN_PULLUP },
-    [BUTTON_ID_SELECT] =
-        { "Select", { NRFX_GPIOTE_INSTANCE(0), 3, NRF_GPIO_PIN_MAP(0, 11) }, NRF_GPIO_PIN_PULLUP },
+    [BUTTON_ID_BACK] =
+        { "Back", { NRFX_GPIOTE_INSTANCE(0), 3, NRF_GPIO_PIN_MAP(0, 11) }, NRF_GPIO_PIN_PULLUP },
     [BUTTON_ID_DOWN] =
         { "Down",   { NRFX_GPIOTE_INSTANCE(0), 4, NRF_GPIO_PIN_MAP(0, 25) }, NRF_GPIO_PIN_PULLUP },
   },
@@ -106,9 +106,9 @@ static const BoardConfigSharpDisplay BOARD_CONFIG_DISPLAY = {
 
   .clk = { NRF5_GPIO_RESOURCE_EXISTS, NRF_GPIO_PIN_MAP(1, 15), true },
   .mosi = { NRF5_GPIO_RESOURCE_EXISTS, NRF_GPIO_PIN_MAP(1, 13), true },
-  .cs = { NRF5_GPIO_RESOURCE_EXISTS, NRF_GPIO_PIN_MAP(1, 12), false },
+  .cs = { NRF5_GPIO_RESOURCE_EXISTS, NRF_GPIO_PIN_MAP(1, 12), true },
 
-  .on_ctrl = { NRF5_GPIO_RESOURCE_EXISTS, NRF_GPIO_PIN_MAP(1, 11), true },  // reuse this as the DC pin
+  .on_ctrl = { NRF5_GPIO_RESOURCE_EXISTS, NRF_GPIO_PIN_MAP(1, 11), true },
 };
 
 extern const VoltageMonitorDevice * VOLTAGE_MONITOR_ALS;
